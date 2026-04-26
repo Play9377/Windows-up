@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>正在配置更新...</title>
+    <style>
+        body {
+            background-color: #0078d7;
+            color: white;
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            cursor: none;
+        }
+        /* 更新界面样式 */
+        #update-ui { text-align: center; user-select: none; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 5px solid #fff; border-bottom-color: transparent;
+            border-radius: 50%; animation: rotation 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 秘密浏览器窗口 */
+        #secret-box {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            top: 10%; left: 10%;
+            width: 80%; height: 80%;
+            background: white;
+            border: 2px solid #333;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            z-index: 9999;
+        }
+        #secret-box iframe { width: 100%; height: 100%; border: none; }
+        
+        /* 提示层（仅调试可见，发布时可删） */
+        .hint { position: fixed; bottom: 10px; color: rgba(255,255,255,0.1); font-size: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- 伪装层 -->
+    <div id="update-ui">
+        <div class="loader"></div>
+        <h1>正在配置更新 <span id="percent">0</span>%</h1>
+        <p>请勿关闭计算机。这可能需要一段时间。</p>
+    </div>
+
+    <!-- 秘密层 -->
+    <div id="secret-box">
+        <iframe src="https://play9377.github.io/VSCODE/" id="moyu-frame"></iframe>
+    </div>
+
+    <div class="hint">按 Ctrl + B 开启/隐藏新世界</div>
+
+    <script>
+        // 1. 模拟更新逻辑
+        let count = 0;
+        const percentEl = document.getElementById('percent');
+        function doUpdate() {
+            if (count < 99) {
+                count += Math.random() > 0.8 ? 1 : 0;
+                percentEl.innerText = count;
+                setTimeout(doUpdate, Math.random() * 3000 + 500);
+            }
+        }
+        doUpdate();
+
+        // 2. 秘密开关逻辑
+        const secretBox = document.getElementById('secret-box');
+        document.addEventListener('keydown', function(e) {
+            // 设置快捷键为 Ctrl + B (Boss)
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                if (secretBox.style.display === 'block') {
+                    secretBox.style.display = 'none';
+                    document.body.style.cursor = 'none'; // 隐藏鼠标
+                } else {
+                    secretBox.style.display = 'block';
+                    document.body.style.cursor = 'default'; // 显示鼠标
+                }
+            }
+        });
+    </script>
+</body>
+</html>
